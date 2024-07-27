@@ -40,7 +40,7 @@ export default function Register() {
             name="email"
             rules={[
               { required: true, message: "Please input your email!" },
-              { type: "email", message: "The input is not valid E-mail!" }
+              { type: "email", message: "The input is not valid E-mail!" },
             ]}
           >
             <Input
