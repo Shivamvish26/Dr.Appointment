@@ -1,22 +1,36 @@
 import React from "react";
 import "../Styles/RegisterStyle.css";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
-  const onFinishHandler = (values) => {
-    console.log(values);
-    form.resetFields();
+  const onFinishHandler = async (values, form) => {
+    try {
+      const response = await axios.post(`/api/v1/user/register`, values);
+      if (response.data.success) {
+        message.success("Registration successful");
+        form.resetFields();
+        navigate("/login");
+      } else {
+        message.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Something Went Wrong");
+    }
   };
 
   return (
     <div className="form-container">
       <Form
-        form={form} // Connect form instance
+        form={form}
         layout="vertical"
-        onFinish={onFinishHandler}
+        onFinish={(values) => onFinishHandler(values, form)}
         className="register-form"
       >
         <h3 className="text-center">Register Form</h3>
