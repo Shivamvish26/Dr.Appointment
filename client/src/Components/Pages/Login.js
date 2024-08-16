@@ -1,14 +1,33 @@
 import React from "react";
 import "../Styles/RegisterStyle.css";
-import { Form, Input, Button } from "antd";
-import { Link } from "react-router-dom";
+import { Form, Input, Button, message } from "antd";
+import { useDispatch } from "react-redux";
+import { showLoading, hideLoading } from "../redux/features/alertSlice";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const onFinishHandler = (values) => {
-    console.log(values);
-    form.resetFields();
+  const onFinishHandler = async (values) => {
+    try {
+      dispatch(showLoading());
+      const res = await axios.post(`/api/v1/user/login`, values);
+      dispatch(hideLoading());
+      if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
+        message.success("Login Success");
+        navigate("/");
+      } else {
+        message.error(res.data.message);
+      }
+    } catch (error) {
+      console.log("error");
+      dispatch(hideLoading());
+      message.error("Invalid username or password");
+    }
   };
 
   return (

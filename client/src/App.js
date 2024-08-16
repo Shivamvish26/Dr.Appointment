@@ -1,20 +1,50 @@
-import {BrowserRouter, Route, Routes} from "react-router-dom"
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./Components/Pages/HomePage";
 import Login from "./Components/Pages/Login";
 import Register from "./Components/Pages/Register";
+import { useSelector } from "react-redux";
+import Spinner from "./Components/Spinner";
+import ProtectedRoutes from "./Components/ProtectedRoutes";
+import PublicRoutes from "./Components/PublicRoutes";
 
 function App() {
-  return (
-      <>
-        <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Register/>}/>
-        </Routes>
-        </BrowserRouter>
-      </>
+  const { loading } = useSelector((state) => state.alert);
 
+  return (
+    <>
+      <BrowserRouter>
+        {loading ? (
+          <Spinner />
+        ) : (
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoutes>
+                  <HomePage />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <PublicRoutes>
+                  <Login />
+                </PublicRoutes>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PublicRoutes>
+                  <Register />
+                </PublicRoutes>
+              }
+            />
+          </Routes>
+        )}
+      </BrowserRouter>
+    </>
   );
 }
 

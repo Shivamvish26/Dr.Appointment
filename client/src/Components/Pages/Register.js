@@ -4,14 +4,19 @@ import { Form, Input, Button, message } from "antd";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { showLoading, hideLoading } from "../redux/features/alertSlice";
 
 export default function Register() {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onFinishHandler = async (values, form) => {
     try {
+      dispatch(showLoading());
       const response = await axios.post(`/api/v1/user/register`, values);
+      dispatch(hideLoading());
       if (response.data.success) {
         message.success("Registration successful");
         form.resetFields();
@@ -21,6 +26,7 @@ export default function Register() {
       }
     } catch (error) {
       console.log(error);
+      dispatch(hideLoading());
       message.error("Something Went Wrong");
     }
   };
