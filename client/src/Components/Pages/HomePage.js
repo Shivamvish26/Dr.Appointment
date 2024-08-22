@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import axios from "axios";
+import Layout from "../Layout";
 
 export default function HomePage() {
   // login user data
@@ -24,8 +25,8 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div>
+    <Layout>
       <h1>HomePage</h1>
-    </div>
+    </Layout>
   );
 }
