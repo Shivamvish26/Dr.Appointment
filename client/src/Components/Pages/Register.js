@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../Styles/RegisterStyle.css";
 import { Form, Input, Button, message } from "antd";
 import { Link } from "react-router-dom";
@@ -12,14 +12,20 @@ export default function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const onFinishHandler = async (values, form) => {
+  // State variables for form fields
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onFinishHandler = async () => {
+    const values = { name, email, password };
     try {
       dispatch(showLoading());
       const response = await axios.post(`/api/v1/user/register`, values);
       dispatch(hideLoading());
       if (response.data.success) {
         message.success("Registration successful");
-        form.resetFields();
+        form.resetFields(); // Reset form fields
         navigate("/login");
       } else {
         message.error(response.data.message);
@@ -36,7 +42,7 @@ export default function Register() {
       <Form
         form={form}
         layout="vertical"
-        onFinish={(values) => onFinishHandler(values, form)}
+        onFinish={onFinishHandler}
         className="register-form"
       >
         <h3 className="text-center">Register Form</h3>
@@ -45,7 +51,11 @@ export default function Register() {
           name="name"
           rules={[{ required: true, message: "Please input your name!" }]}
         >
-          <Input type="text" />
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </Form.Item>
         <Form.Item
           label="Email"
@@ -55,14 +65,22 @@ export default function Register() {
             { type: "email", message: "The input is not valid E-mail!" },
           ]}
         >
-          <Input type="email" />
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </Form.Item>
         <Form.Item
           label="Password"
           name="password"
           rules={[{ required: true, message: "Please input your password!" }]}
         >
-          <Input type="password" />
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Form.Item>
         <Link to="/login" className="text-decoration-none m-2">
           Already a user? Login here
