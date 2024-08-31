@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');  
 
 const doctorSchema = new mongoose.Schema(
   {
@@ -11,42 +11,46 @@ const doctorSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
-      required: [true, "last name is required"],
+      required: [true, "Last Name is required"],
     },
     phone: {
       type: String,
-      required: [true, "phone number is required"],
+      required: [true, "Phone number is required"],
     },
     email: {
       type: String,
-      required: [true, "email is required"],
+      required: [true, "Email is required"],
     },
     website: {
       type: String,
     },
     address: {
       type: String,
-      required: [true, "address is required"],
+      required: [true, "Address is required"],
     },
     specialization: {
       type: String,
-      required: [true, "specialization is required"],
+      required: [true, "Specialization is required"],
     },
     experience: {
       type: Number,
-      required: [true, "experience is required"],
+      required: [true, "Experience is required"],
     },
-    feesPerCunsaltation: {
+    feesPerConsultation: {  // Corrected spelling here
       type: Number,
-      required: [true, "fees per consultation is required"],
+      required: [true, "Fees per consultation is required"],
+    },
+    status: {
+      type: String,
+      default: "Pending",
     },
     timing: {
-      type: String,
-      required: [true, "work timing is required"],
+      type: [String],  // Storing timing as an array of strings
+      required: [true, "Work timing is required"],
     },
   },
   { timestamps: true }
 );
 
-const doctorModel = mongoose.model("users", doctorSchema);
+const doctorModel = mongoose.model("doctors", doctorSchema);
 module.exports = doctorModel;
