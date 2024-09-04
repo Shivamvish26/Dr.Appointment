@@ -78,7 +78,7 @@ const authController = async (req, res) => {
   }
 };
 
-// Appply Doctor CTRL
+// Appply Doctor Ctrl
 const applyDoctorController = async (req, res) => {
   try {
     const timing = req.body.timing.map((time) => new Date(time).toISOString());
@@ -120,36 +120,59 @@ const applyDoctorController = async (req, res) => {
   }
 };
 
-
-// notification Ctrl
-const getallnotificationController = async(req,res)=>{
-try {
-    const user = await userModel.findOne({_id:req.body.userId})
-    const seennotification = user.seennotification
-    const notification = user.notification
-    seennotification.push(...notification)
-    user.notification = []
-    user.seennotification = notification
-    const updatedUser = await user.save()
+// Notification Ctrl
+const getallnotificationController = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.body.userId });
+    const seennotification = user.seennotification;
+    const notification = user.notification;
+    seennotification.push(...notification);
+    user.notification = [];
+    user.seennotification = notification;
+    const updatedUser = await user.save();
     res.status(200).send({
       success: true,
-      message:'All notification marked as read',
-      data: updatedUser
-    })
-} catch (error) {
-  console.log(error)
-  res.status(500).send({
-    message:'Error in Notification',
-    success:'false',
-    error
-  })
-}
-}
+      message: "All notification marked as read",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "Error in Notification",
+      success: "false",
+      error,
+    });
+  }
+};
+
+// Delete All Notification
+const deleteallnotificationController = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.body.userId });
+    user.notification = [];
+    user.seennotification = [];
+    const updatedUser = await user.save();
+    updatedUser.password = undefined;
+    res.status(200).send({
+      success: true,
+      message: "All notification deleted",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in Delete All Notification",
+      error,
+    });
+  }
+};
 
 module.exports = {
   loginController,
   registerController,
   authController,
   applyDoctorController,
-  getallnotificationController
+  getallnotificationController,
+  deleteallnotificationController,
 };

@@ -4,7 +4,8 @@ const {
   registerController,
   authController,
   applyDoctorController,
-  getallnotificationController
+  getallnotificationController,
+  deleteallnotificationController
 } = require("../Controllers/userCtrl");
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -18,13 +19,17 @@ router.post("/login", loginController);
 // REGISTER || POST METHOD
 router.post("/register", registerController);
 
-// Auth || POST METHOD
+// AUTH || POST METHOD
 router.post("/getuserData",authMiddleware, authController)
 
-// ApplyDoctor || POST METHOD
+// APPLY DOCTOR || POST METHOD
 router.post("/apply-doctor",authMiddleware, applyDoctorController)
 
-// Notification Doctor || POST METHOD
+// NOTIFICATION COCTOR || POST METHOD
 router.post("/get-all-notification",authMiddleware, getallnotificationController)
+
+// DELETE ALL NOTIFICATION || POST METHOD
+router.post("/delete-all-notification",authMiddleware, deleteallnotificationController)
+
 
 module.exports = router;
