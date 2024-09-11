@@ -17,8 +17,31 @@ const Layout = ({ children }) => {
     navigate("/login");
   };
 
+  // Doctor Menu
+  const doctorMenu = [
+    {
+      name: "Home",
+      path: "/",
+      icons: "fa-solid fa-house",
+    },
+    {
+      name: "Appointment",
+      path: "/appointment",
+      icons: "fa-solid fa-list",
+    },
+    {
+      name: "Profile",
+      path: `/doctor/profile/${user?._id}`,
+      icons: "fa-solid fa-user",
+    },
+  ];
+
   // rendering menu list
-  const Data = user?.isAdmin ? AdminMenu : UserMenu;
+  const Data = user?.isAdmin
+    ? AdminMenu
+    : user?.isDoctor
+    ? doctorMenu
+    : UserMenu;
 
   return (
     <div className="main">
@@ -32,7 +55,10 @@ const Layout = ({ children }) => {
             {Data.map((menu, index) => {
               const isActive = location.pathname === menu.path;
               return (
-                <div key={index} className={`menu-item ${isActive && "active"}`}>
+                <div
+                  key={index}
+                  className={`menu-item ${isActive && "active"}`}
+                >
                   <i className={menu.icons}></i>
                   <Link to={menu.path}>{menu.name}</Link>
                 </div>
@@ -46,15 +72,17 @@ const Layout = ({ children }) => {
         </div>
         <div className="content">
           <div className="header">
-            <div className="header-content" style={{cursor:"pointer"}}>
-              <Badge count={user && user.notification.length} onClick={()=>{
-                navigate("/notification")
-              }} >
+            <div className="header-content" style={{ cursor: "pointer" }}>
+              <Badge
+                count={user && user.notification.length}
+                onClick={() => {
+                  navigate("/notification");
+                }}
+              >
                 <i class="fa-solid fa-bell"></i>
               </Badge>
               <Link to="/profile">{user?.name}</Link>
             </div>
-            
           </div>
           <div className="body">{children}</div>
         </div>

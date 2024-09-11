@@ -10,6 +10,7 @@ import ApplyDoctor from "./Components/Pages/ApplyDoctor";
 import Notification from "./Components/Pages/Notification";
 import Doctors from "./Components/Pages/Admin/Doctors";
 import Users from "./Components/Pages/Admin/Users";
+import Profile from "./Components/Pages/doctors/Profile";
 
 function App() {
   const { loading } = useSelector((state) => state.alert);
@@ -58,6 +59,14 @@ function App() {
               element={
                 <ProtectedRoutes>
                   <Users />
+                </ProtectedRoutes>
+              }
+            />
+             <Route
+              path="/doctor/profile/:id"
+              element={
+                <ProtectedRoutes>
+                  <Profile />
                 </ProtectedRoutes>
               }
             />

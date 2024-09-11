@@ -76,7 +76,7 @@ const Doctors = () => {
           {record.status.toLowerCase() === "pending" ? (
             <button
               className="btn btn-success"
-              onClick={() => handleaccountstatus(record, "approve")}
+              onClick={() => handleaccountstatus(record, "approved")}
             >
               Approve
             </button>
