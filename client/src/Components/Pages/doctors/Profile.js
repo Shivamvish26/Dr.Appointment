@@ -38,14 +38,21 @@ const Profile = () => {
       specialization,
       experience,
       feesPerConsultation,
-      timing: timing.map((time) => time.toISOString()),
+      timing: timing.map((time) => time.format("h:mm A")),
     };
 
     try {
       dispatch(showLoading(true));
       const res = await axios.post(
         `/api/v1/doctor/updateprofile`,
-        { ...values, userId: user._id },
+        {
+          ...values,
+          userId: user._id,
+          timing: [
+            moment(values.timing[0].format("HH:mm")),
+            moment(values.timing[1].format("HH:mm")),
+          ],
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -106,203 +113,216 @@ const Profile = () => {
 
   return (
     <Layout>
-     <div className="p-4">
-     <h1>Manage Profile</h1>
-      {doctor ? (
-        <Form
-          layout="vertical"
-          onFinish={handleFinish}
-          className="m-4"
-          initialValues={doctor}
-        >
-          <h4>Personal Details :</h4>
-          <Row gutter={20}>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="First Name"
-                required
-                rules={[
-                  { required: true, message: "Please input your First Name!" },
-                  {
-                    min: 2,
-                    message: "First Name must be at least 2 characters long.",
-                  },
-                  {
-                    max: 50,
-                    message: "First Name cannot be longer than 50 characters.",
-                  },
-                ]}
-              >
-                <Input
-                  type="text"
-                  placeholder="Enter your First Name"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
+      <div className="p-4">
+        <h1>Manage Profile</h1>
+        {doctor ? (
+          <Form
+            layout="vertical"
+            onFinish={handleFinish}
+            className="m-4"
+            initialValues={{
+              ...doctor,
+              timing: [
+                moment(doctor.timing[0], "HH:mm"),
+                moment(doctor.timing[1], "HH:mm"),
+              ],
+            }}
+          >
+            <h4>Personal Details :</h4>
+            <Row gutter={20}>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="First Name"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your First Name!",
+                    },
+                    {
+                      min: 2,
+                      message: "First Name must be at least 2 characters long.",
+                    },
+                    {
+                      max: 50,
+                      message:
+                        "First Name cannot be longer than 50 characters.",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter your First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Last Name"
-                required
-                rules={[
-                  { required: true, message: "Please input your Last Name!" },
-                ]}
-              >
-                <Input
-                  type="text"
-                  placeholder="Enter your Last Name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Phone No"
-                required
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Phone Number!",
-                  },
-                ]}
-              >
-                <Input
-                  type="number"
-                  placeholder="Enter your Phone Number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Email"
-                required
-                rules={[
-                  { required: true, message: "Please input your Email!" },
-                ]}
-              >
-                <Input
-                  type="email"
-                  placeholder="Enter your Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item label="Website (Optional)">
-                <Input
-                  type="text"
-                  placeholder="Enter your Website"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Address"
-                required
-                rules={[
-                  { required: true, message: "Please input your Address!" },
-                ]}
-              >
-                <Input
-                  type="text"
-                  placeholder="Enter your Address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <h4>Professional Details :</h4>
-          <Row gutter={20}>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Specialization"
-                required
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Specialization!",
-                  },
-                ]}
-              >
-                <Input
-                  type="text"
-                  placeholder="Enter your Specialization"
-                  value={specialization}
-                  onChange={(e) => setSpecialization(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Experience"
-                required
-                rules={[
-                  { required: true, message: "Please input your Experience!" },
-                ]}
-              >
-                <Input
-                  type="text"
-                  placeholder="Enter your Experience"
-                  value={experience}
-                  onChange={(e) => setExperience(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Fees for Consultation"
-                required
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input your Fees for Consultation!",
-                  },
-                ]}
-              >
-                <Input
-                  type="number"
-                  placeholder="Enter your Fees for Consultation"
-                  value={feesPerConsultation}
-                  onChange={(e) => setFeesPerConsultation(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={24} lg={8}>
-              <Form.Item
-                label="Timing"
-                required
-                rules={[
-                  { required: true, message: "Please select your Timing!" },
-                ]}
-              >
-                <TimePicker.RangePicker
-                  use12Hours
-                  format="h:mm a"
-                  value={timing}
-                  onChange={(value) => setTiming(value)}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <div className="d-flex justify-content-center">
-            <button className="btn btn-primary" type="submit">
-              Update
-            </button>
-          </div>
-        </Form>
-      ) : (
-        <div>Please wait while your data is loading...</div>
-      )}
-     </div>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="Last Name"
+                  required
+                  rules={[
+                    { required: true, message: "Please input your Last Name!" },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter your Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="Phone No"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your Phone Number!",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="number"
+                    placeholder="Enter your Phone Number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="Email"
+                  required
+                  rules={[
+                    { required: true, message: "Please input your Email!" },
+                  ]}
+                >
+                  <Input
+                    type="email"
+                    placeholder="Enter your Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item label="Website (Optional)">
+                  <Input
+                    type="text"
+                    placeholder="Enter your Website"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="Address"
+                  required
+                  rules={[
+                    { required: true, message: "Please input your Address!" },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter your Address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <h4>Professional Details :</h4>
+            <Row gutter={20}>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="Specialization"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your Specialization!",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter your Specialization"
+                    value={specialization}
+                    onChange={(e) => setSpecialization(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="Experience"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your Experience!",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    placeholder="Enter your Experience"
+                    value={experience}
+                    onChange={(e) => setExperience(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="Fees for Consultation"
+                  required
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input your Fees for Consultation!",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="number"
+                    placeholder="Enter your Fees for Consultation"
+                    value={feesPerConsultation}
+                    onChange={(e) => setFeesPerConsultation(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={24} lg={8}>
+                <Form.Item
+                  label="Timing"
+                  required
+                  rules={[
+                    { required: true, message: "Please select your Timing!" },
+                  ]}
+                >
+                  <TimePicker.RangePicker
+                    use12Hours
+                    format="h:mm a"
+                    value={timing}
+                    onChange={(value) => setTiming(value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <div className="d-flex justify-content-center">
+              <button className="btn btn-primary" type="submit">
+                Update
+              </button>
+            </div>
+          </Form>
+        ) : (
+          <div>Please wait while your data is loading...</div>
+        )}
+      </div>
     </Layout>
   );
 };
