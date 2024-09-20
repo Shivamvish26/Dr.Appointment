@@ -40,6 +40,18 @@
   text-align: center;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-image {
+  width: 30px; 
+  height: auto;
+  margin-left: 10px; 
+} 
+
 .menu {
   margin-top: 50px;
 }

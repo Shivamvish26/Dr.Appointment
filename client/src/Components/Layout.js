@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Avatar, Badge, message } from "antd";
 import { Cursor } from "mongoose";
+import logo from "../Components/Assests/Icons/Medical-Symbol.png";
 
 const Layout = ({ children }) => {
   const { user } = useSelector((state) => state.user);
@@ -48,9 +49,10 @@ const Layout = ({ children }) => {
       <div className="layout">
         <div className="sidebar">
           <div className="logo">
+            <img src={logo} alt="Logo" className="logo-image" />
             <h6>DOC APP</h6>
-            <hr />
           </div>
+
           <div className="menu">
             {Data.map((menu, index) => {
               const isActive = location.pathname === menu.path;

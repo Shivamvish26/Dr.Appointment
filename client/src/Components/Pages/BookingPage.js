@@ -52,9 +52,9 @@ const BookingPage = () => {
     <Layout>
       <div className="p-4">
         <h1>Booking Page</h1>
-        <div className="container">
+        <div className="container" >
           {doctors && (
-            <div className="border p-2 w-50">
+            <div className="border p-2 w-50" style={{boxShadow:"rgba(0, 0, 0, 0.24) 0px 3px 8px"}}>
               <p>
                 Dr. : {doctors.firstName} {doctors.lastName}
               </p>

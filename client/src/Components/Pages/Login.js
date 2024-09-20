@@ -36,7 +36,8 @@ export default function Login() {
   };
 
   return (
-    <div className="form-container">
+    <div className="background-container">
+      <div className="form-container">
       <Form layout="vertical" onFinish={onFinishHandler} className="register-form">
         <h3 className="text-center">Login Form</h3>
         <Form.Item
@@ -71,6 +72,7 @@ export default function Login() {
           Login
         </Button>
       </Form>
+    </div>
     </div>
   );
 }
