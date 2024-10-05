@@ -189,23 +189,47 @@ const getallDoctorlistController = async (req, res) => {
 };
 
 // BOOK APPOINTMENT
+const moment = require("moment"); // Ensure moment is imported
+
 const bookeAppointmentController = async (req, res) => {
   try {
+    // Correct the date and time format parsing
+    req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString();
+    req.body.time = moment(req.body.time, "HH:mm").toISOString(); // Correct format for time
+
+    // Create new appointment with the request body
     const newAppointment = new appointmentModel(req.body);
     await newAppointment.save();
-    const User = await userModel.findOne({ _Id: req.body.userId });
-    user.notification.push({
+
+    // Find the doctor using doctorInfo's userId
+    const doctor = await userModel.findOne({ _id: req.body.doctorInfo.userId });
+
+    // Ensure doctor exists before trying to add notification
+    if (!doctor) {
+      return res.status(404).send({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    // Push a new notification to the doctor's notification array
+    doctor.notification.push({
       type: "New Appointment Request",
-      message: ` A new Appointment Request from ${req.body.userInfo.name}`,
+      message: `A new Appointment Request from ${req.body.userInfo.name}`,
       onClickPath: "/user/appointments",
     });
-    await user.save();
+
+    // Save the updated doctor with the notification
+    await doctor.save();
+
+    // Return success response to the client
     res.status(200).send({
       success: true,
       message: "Appointment Booked Successfully",
     });
   } catch (error) {
-    console.log(error);
+    // Catch any errors and return a 500 error response
+    console.error("Error while booking appointment:", error);
     res.status(500).send({
       success: false,
       message: "Error While Booking Appointment",
