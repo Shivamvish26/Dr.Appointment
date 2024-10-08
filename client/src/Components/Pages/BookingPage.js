@@ -39,17 +39,44 @@ const BookingPage = () => {
     getDoctorData();
   }, []);
 
-  const checkAvailability = () => {
-    if (date && time) {
-      // Add logic to check availability from the backend, if needed
-      setIsAvailable(true);
-    } else {
-      setIsAvailable(false);
+  const checkAvailability = async () => {
+    // if (date && time) {
+    //   setIsAvailable(true);
+    // } else {
+    //   setIsAvailable(false);
+    // }
+    try {
+      dispatch(showLoading());
+      const res = await axios.post(
+        "/api/v1/user/book-availibility",
+        { doctorId: params.doctorId, date: date, time: time },
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        }
+      );
+      dispatch(hideLoading());
+      if (res.data.success) {
+        setIsAvailable(true);
+        console.log(isAvailable);
+        message.success(res.data.message);
+      } else {
+        message.error(res.data.message);
+      }
+    } catch (error) {
+      dispatch(hideLoading());
+      console.log(error);
     }
   };
 
   const handleBooking = async () => {
     try {
+      setIsAvailable(true);
+      if (!date && !time) {
+        return alert("Date & Time Required");
+      }
+
       dispatch(showLoading());
       const res = await axios.post(
         `/api/v1/user/book-appointment`,
@@ -97,28 +124,37 @@ const BookingPage = () => {
                 <DatePicker
                   placeholder="Select Date"
                   format="DD-MM-YYYY"
-                  onChange={(value) =>
-                    setDate(moment(value).format("DD-MM-YYYY"))
-                  }
+                  onChange={(value) => {
+                    setDate(moment(value).format("DD-MM-YYYY"));
+                    // setIsAvailable(false);
+                  }}
                 />
+
                 <TimePicker
                   format="HH:mm"
                   className="mt-2"
-                  onChange={(value) => setTime(value)}
+                  onChange={(value) => {
+                    setTime(value);
+                    // setIsAvailable(false);
+                  }}
                 />
+
                 <button
                   className="btn btn-primary mt-2"
                   onClick={checkAvailability}
                 >
                   Check Availability
                 </button>
-                <button
-                  className="btn btn-dark mt-2"
-                  onClick={ handleBooking}
-                  // disabled={!isAvailable}
-                >
-                  Book Now
-                </button>
+                {/* {!isAvailable && (
+                 
+                )} */}
+                 <button
+                    className="btn btn-dark mt-2"
+                    onClick={handleBooking}
+                    // disabled={!isAvailable}
+                  >
+                    Book Now
+                  </button>
               </div>
             </div>
           )}
